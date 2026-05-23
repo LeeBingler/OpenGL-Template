@@ -3,6 +3,7 @@ SRC_C	=	src/glad.c
 SRC_CPP	=	src/main.cpp	\
 			src/renderLoop.cpp	\
 			src/checkErrorShader.cpp	\
+			src/Shader.cpp	\
 
 INC =	include/
 
