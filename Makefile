@@ -4,6 +4,7 @@ SRC_CPP	=	src/main.cpp	\
 			src/renderLoop.cpp	\
 			src/checkErrorShader.cpp	\
 			src/Shader.cpp	\
+			src/Texture2D.cpp	\
 
 INC =	include/
 
