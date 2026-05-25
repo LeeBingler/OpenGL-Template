@@ -1,6 +1,10 @@
 #include <main/Shader.hpp>
 
-std::string shaderCodeToString (const char *path) {
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+static std::string shaderCodeToString (const char *path) {
     std::string code = "";
     std::ifstream shaderFile;
 
@@ -19,7 +23,7 @@ std::string shaderCodeToString (const char *path) {
     return code;
 }
 
-unsigned int createShader(unsigned int typeShader, const char *shaderCode) {
+static unsigned int createShader(unsigned int typeShader, const char *shaderCode) {
     int success;
     char infoLog[512];
     unsigned int shader = glCreateShader(typeShader);
@@ -41,7 +45,7 @@ unsigned int createShader(unsigned int typeShader, const char *shaderCode) {
     return shader;
 }
 
-unsigned int createShaderProgram(unsigned int vertexShaderID, unsigned int fragmentShaderID) {
+static unsigned int createShaderProgram(unsigned int vertexShaderID, unsigned int fragmentShaderID) {
     int success;
     char infoLog[512];
     unsigned int shaderProgramID = glCreateProgram();
@@ -89,4 +93,8 @@ void Shader::setInt(const std::string &name, int value) {
 
 void Shader::setFloat(const std::string &name, float value) {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+void Shader::deleteProgram() {
+    glDeleteProgram(ID);
 }
