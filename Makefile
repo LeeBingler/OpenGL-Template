@@ -5,6 +5,7 @@ SRC_CPP	=	src/main.cpp	\
 			src/checkErrorShader.cpp	\
 			src/Shader.cpp	\
 			src/Texture2D.cpp	\
+			src/CameraFly.cpp	\
 
 INC =	include/
 
