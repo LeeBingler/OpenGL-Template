@@ -4,66 +4,6 @@
 #include <sstream>
 #include <iostream>
 
-static std::string shaderCodeToString (const char *path) {
-    std::string code = "";
-    std::ifstream shaderFile;
-
-    shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try {
-        shaderFile.open(path);
-        std::stringstream shaderStream;
-        shaderStream << shaderFile.rdbuf();
-        shaderFile.close();
-        code = shaderStream.str();
-    } catch (std::ifstream::failure e) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-        (void) e;
-    }
-
-    return code;
-}
-
-static unsigned int createShader(unsigned int typeShader, const char *shaderCode) {
-    int success;
-    char infoLog[512];
-    unsigned int shader = glCreateShader(typeShader);
-    glShaderSource(shader, 1, &shaderCode, NULL);
-    glCompileShader(shader);
-
-    // print compile errors if any
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog);
-
-        if (typeShader == GL_VERTEX_SHADER) {
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-        } else {
-            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-        }
-    };
-
-    return shader;
-}
-
-static unsigned int createShaderProgram(unsigned int vertexShaderID, unsigned int fragmentShaderID) {
-    int success;
-    char infoLog[512];
-    unsigned int shaderProgramID = glCreateProgram();
-
-    glAttachShader(shaderProgramID, vertexShaderID);
-    glAttachShader(shaderProgramID, fragmentShaderID);
-    glLinkProgram(shaderProgramID);
-
-    // print linking errors if any
-    glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgramID, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-
-    return shaderProgramID;
-}
-
 Shader::Shader (const char* vertexPath, const char* fragmentPath) {
     std::string vStringShaderCode = shaderCodeToString(vertexPath);
     std::string fStringShaderCode = shaderCodeToString(fragmentPath);
@@ -102,4 +42,65 @@ void Shader::setMat4(const std::string &name, glm::mat4 value) {
 
 void Shader::deleteProgram() {
     glDeleteProgram(ID);
+}
+
+
+std::string Shader::shaderCodeToString (const char *path) {
+    std::string code = "";
+    std::ifstream shaderFile;
+
+    shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        shaderFile.open(path);
+        std::stringstream shaderStream;
+        shaderStream << shaderFile.rdbuf();
+        shaderFile.close();
+        code = shaderStream.str();
+    } catch (std::ifstream::failure e) {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        (void) e;
+    }
+
+    return code;
+}
+
+unsigned int Shader::createShader(unsigned int typeShader, const char *shaderCode) {
+    int success;
+    char infoLog[512];
+    unsigned int shader = glCreateShader(typeShader);
+    glShaderSource(shader, 1, &shaderCode, NULL);
+    glCompileShader(shader);
+
+    // print compile errors if any
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+
+        if (typeShader == GL_VERTEX_SHADER) {
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        } else {
+            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        }
+    };
+
+    return shader;
+}
+
+unsigned int Shader::createShaderProgram(unsigned int vertexShaderID, unsigned int fragmentShaderID) {
+    int success;
+    char infoLog[512];
+    unsigned int shaderProgramID = glCreateProgram();
+
+    glAttachShader(shaderProgramID, vertexShaderID);
+    glAttachShader(shaderProgramID, fragmentShaderID);
+    glLinkProgram(shaderProgramID);
+
+    // print linking errors if any
+    glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgramID, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+
+    return shaderProgramID;
 }
